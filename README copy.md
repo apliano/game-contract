@@ -1,4 +1,4 @@
-# Game Contract
+# Web 3 Smart Contracts
 
 ## Info
 
