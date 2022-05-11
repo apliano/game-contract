@@ -13,4 +13,12 @@ contract TestHero is Hero {
     function setRandom(uint r) public {
         random = r;
     }
+
+    function getLargestHeroValue() public pure returns (Class) {
+        return type(Class).max;
+    }
+
+    function getSmallestHeroValue() public pure returns (Class) {
+        return type(Class).min;
+    }
 }
