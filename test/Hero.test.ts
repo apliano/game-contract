@@ -50,11 +50,17 @@ describe('Hero', () => {
       const heroes = await heroContract.getHeroes();
       const hero = heroes[heroClass];
 
+      // [M, I, D, H, S]
       expect(await heroContract.getStrength(hero)).to.equal(13);
+      // [M, I, D, H]
       expect(await heroContract.getDexterity(hero)).to.equal(14);
+      // [M, I, H]
       expect(await heroContract.getHealth(hero)).to.equal(3);
+      // [M, I]
       expect(await heroContract.getIntelligence(hero)).to.equal(1);
+      // [M]
       expect(await heroContract.getMagic(hero)).to.equal(15);
+
       expect(await heroContract.getClass(hero)).to.equal(heroClass);
     }
 
