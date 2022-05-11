@@ -7,12 +7,24 @@ contract Hero {
 
     mapping(address => uint[]) addressToHeroes;
 
-    function generateRandom() public view returns (uint) {
+    function getLargestHeroValue() public pure returns (Class) {
+        return type(Class).max;
+    }
+
+    function getSmallestHeroValue() public pure returns (Class) {
+        return type(Class).min;
+    }
+
+    function generateRandom() internal virtual view returns (uint) {
         return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp)));
     }
 
     function getHeroes() public view returns (uint[] memory) {
         return addressToHeroes[msg.sender];
+    }
+
+    function getClass(uint hero) public pure returns (uint) {
+        return hero & 0x3;
     }
 
     function getStrength(uint hero) public pure returns (uint) {
@@ -27,6 +39,24 @@ contract Hero {
         return (hero >> 7) & 0x1F;
     }
 
+    function getDexterity(uint hero) public pure returns (uint) {
+        // Skip the Class, Strength & Health bits
+        // Return the next 5 bits
+        return (hero >> 12) & 0x1F;
+    }
+
+    function getIntelligence(uint hero) public pure returns (uint) {
+        // Skip the Class, Strength, Health & Dexterity bits
+        // Return the next 5 bits
+        return (hero >> 17) & 0x1F;
+    }
+
+    function getMagic(uint hero) public pure returns (uint) {
+        // Skip the Class, Strength, Health, Dexterity & Intelligence bits
+        // Return the next 5 bits
+        return (hero >> 22) & 0x1F;
+    }
+
     function createHero(Class class) public payable {
         require(msg.value >= 0.05 ether, "Not enough money, you cheapie bastard");
         // stats are strength, health , dexterity, intellect, magic
@@ -37,7 +67,7 @@ contract Hero {
         stats[3] = 17; // Intelligence starts at bit 17
         stats[4] = 22; // Magic starts at bit 22
 
-        uint length = 5;
+        uint length = stats.length;
 
         // Hero is an array:
         // Each stat goes from 0 to 18 -> Needs at most 5 bits
@@ -48,6 +78,7 @@ contract Hero {
 
         do {
             uint position = generateRandom() % length;
+            // stats go from 18 to 1
             uint value = generateRandom() % (13 + length) + 1;
 
             // Bitwise OR to write a value
